@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="main-container">
+      <section class="cancel">
+        <div style="border-radius: 100%; border: 1px solid grey; padding: 10px">
+          <span style="color: #ff5733; font-family: sans-serif">X</span>
+        </div>
+      </section>
+      <section style="display: flex; justify-content: start; width: 100%">
+        <h1
+          style="
+            text-align: start;
+            font-family: sans-serif;
+            font-weight: 100;
+            font-size: 35px;
+          "
+        >
+          Log in
+        </h1>
+      </section>
+      <section class="identification">
+        <div style="font-family: sans-serif">Identification method</div>
+        <div class="radio-section">
+          <div style="display: flex; gap: 10px">
+            <input
+              type="radio"
+              id="email"
+              name="identification"
+              value="mobile_key"
+              checked
+            />
+            <span style="font-family: sans-serif">Mobile_key</span>
+          </div>
+          <div style="display: flex; gap: 10px">
+            <input
+              type="radio"
+              id="phone"
+              name="identification"
+              value="key_code"
+            />
+            <span style="font-family: sans-serif">Key code list</span>
+          </div>
+        </div>
+      </section>
+      <div class="input-section">
+        <div style="font-family: sans-serif; margin-bottom: 5px">Username</div>
+        <input
+          type="text"
+          class="form-input"
+          placeholder="Enter your Op number"
+        />
+      </div>
+      <div id="password">
+        <div style="font-family: sans-serif; margin-bottom: 5px">Password</div>
+        <input
+          type="text"
+          placeholder="Enter your Op number"
+          class="form-input"
+        />
+      </div>
+      <div class="forget"><a>Forget your username?</a></div>
+      <div class="continue-button">
+        <button class="continue-btn">
+          <span>Continue</span>
+        </button>
+      </div>
+      <div class="or-section">
+        <div class="thin-container"></div>
+        <span class="">OR</span>
+        <div class="thin-container"></div>
+      </div>
+      <div class="down">
+        <a href="#">Log in with another bank's ID</a>
+      </div>
+    </div>
+
+    <script>
+      const radioButtons = document.querySelectorAll(
+        'input[name="identification"]'
+      );
+      const passwordSection = document.getElementById("password");
+
+      function togglePasswordVisibility() {
+        const selected = document.querySelector(
+          'input[name="identification"]:checked'
+        ).value;
+        if (selected === "key_code") {
+          passwordSection.style.display = "flex";
+        } else {
+          passwordSection.style.display = "none";
+        }
+      }
+
+      // Run once on load (to respect initial selection)
+      togglePasswordVisibility();
+
+      // Add event listeners for change
+      radioButtons.forEach((radio) => {
+        radio.addEventListener("change", togglePasswordVisibility);
+      });
+    </script>
+  </body>
+</html>
