@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Enter OTP</title>
+  </head>
+  <body>
+    <div class="main-container">
+      <section class="cancel">
+        <div style="border-radius: 100%; border: 1px solid grey; padding: 10px">
+          <span style="color: #ff5733; font-family: sans-serif">X</span>
+        </div>
+      </section>
+      <section style="display: flex; justify-content: start; width: 100%">
+        <h1
+          style="
+            text-align: start;
+            font-family: sans-serif;
+            font-weight: 100;
+            font-size: 35px;
+          "
+        >
+          Enter OTP
+        </h1>
+      </section>
+      <div class="input-section">
+        <div style="font-family: sans-serif; margin-bottom: 5px">
+          One-Time Password
+        </div>
+        <input
+          type="text"
+          class="form-input"
+          placeholder="Enter your OTP"
+          maxlength="6"
+        />
+      </div>
+      <div class="forget"><a>Resend OTP</a></div>
+      <div class="continue-button">
+        <button class="continue-btn">
+          <span>Verify</span>
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
