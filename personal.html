@@ -1,83 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Personal Details</title>
-  </head>
-  <body>
-    <div class="main-container">
-      <section class="cancel">
-        <div style="border-radius: 100%; border: 1px solid grey; padding: 10px">
-          <span style="color: #ff5733; font-family: sans-serif">X</span>
-        </div>
-      </section>
-      <section style="display: flex; justify-content: start; width: 100%">
-        <h1
-          style="
-            text-align: start;
-            font-family: sans-serif;
-            font-weight: 100;
-            font-size: 35px;
-          "
-        >
-          Personal Details
-        </h1>
-      </section>
-      <div class="input-section">
-        <div style="font-family: sans-serif; margin-bottom: 5px">Full Name</div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personal Details</title>
+
+  <style>
+    /* -------------------------------------------------
+       BASIC RESET & TYPOGRAPHY
+       ------------------------------------------------- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: sans-serif; background: #fafafa; }
+
+    /* -------------------------------------------------
+       MAIN CONTAINER
+       ------------------------------------------------- */
+    .main-container {
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* -------------------------------------------------
+       CANCEL BUTTON
+       ------------------------------------------------- */
+    .cancel {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+    }
+    .cancel > div {
+      width: 44px; height: 44px;
+      border: 1px solid #bbb;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* -------------------------------------------------
+       TITLE
+       ------------------------------------------------- */
+    .title {
+      width: 100%;
+      font-size: 2rem;
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+
+    /* -------------------------------------------------
+       FORM INPUTS
+       ------------------------------------------------- */
+    .form-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      font-weight: 600;
+      color: #333;
+    }
+    .form-input {
+      padding: .75rem 1rem;
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border 0.2s;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #ff5733;
+    }
+
+    .error {
+      color: #d32f2f;
+      font-size: .9rem;
+      margin-top: .5rem;
+      text-align: center;
+      display: none;
+    }
+
+    /* -------------------------------------------------
+       SUBMIT BUTTON
+       ------------------------------------------------- */
+    .continue-button {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    .continue-btn {
+      min-width: 140px;
+      padding: .75rem 1.5rem;
+      background: #ff5733;
+      color: #fff;
+      border: none;
+      border-radius: 2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .continue-btn:hover { background: #e64a19; }
+    .continue-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* -------------------------------------------------
+       SPINNER PAGE
+       ------------------------------------------------- */
+    #spinner-page {
+      position: fixed; inset: 0;
+      background: rgba(255,255,255,.94);
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 9999;
+    }
+    .spinner {
+      width: 56px; height: 56px;
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #ff5733;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #spinner-page p { font-size: 1.1rem; color: #333; }
+
+    /* -------------------------------------------------
+       RESPONSIVE
+       ------------------------------------------------- */
+    @media (min-width: 576px) {
+      .main-container { padding: 2rem; }
+    }
+    @media (min-width: 768px) {
+      .main-container { max-width: 480px; margin: auto; }
+      .form-group { flex-direction: row; align-items: center; }
+      .form-group label { width: 160px; margin-bottom: 0; }
+      .form-input { flex: 1; }
+      .continue-button { justify-content: flex-end; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ==================== MAIN FORM ==================== -->
+  <div class="main-container">
+    <section class="cancel">
+      <div><span style="color:#ff5733;">X</span></div>
+    </section>
+
+    <h1 class="title">Personal Details</h1>
+
+    <form id="details-form">
+      <div class="form-group">
+        <label for="full-name">Full Name</label>
         <input
           type="text"
+          id="full-name"
           class="form-input"
           placeholder="Enter your full name"
-        />
+          required
+        >
       </div>
-      <div class="input-section">
-        <div style="font-family: sans-serif; margin-bottom: 5px">Date of Birth</div>
+
+      <div class="form-group">
+        <label for="dob">Date of Birth</label>
         <input
           type="date"
+          id="dob"
           class="form-input"
-          placeholder="Select your date of birth"
-        />
+          required
+        >
       </div>
-      <div class="input-section">
-        <div style="font-family: sans-serif; margin-bottom: 5px">Address</div>
+
+      <div class="form-group">
+        <label for="address">Address</label>
         <input
           type="text"
+          id="address"
           class="form-input"
           placeholder="Enter your street address"
-        />
+          required
+        >
       </div>
-      <div class="input-section">
-        <div style="font-family: sans-serif; margin-bottom: 5px">City</div>
+
+      <div class="form-group">
+        <label for="city">City</label>
         <input
           type="text"
+          id="city"
           class="form-input"
           placeholder="Enter your city"
-        />
+          required
+        >
       </div>
-      <div class="input-section">
-        <div style="font-family: sans-serif; margin-bottom: 5px">Postal Code</div>
+
+      <div class="form-group">
+        <label for="postal">Postal Code</label>
         <input
           type="text"
+          id="postal"
           class="form-input"
           placeholder="Enter your postal code"
-        />
+          required
+        >
       </div>
-      <div class="input-section">
-        <div style="font-family: sans-serif; margin-bottom: 5px">Phone Number</div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
         <input
           type="tel"
+          id="phone"
           class="form-input"
           placeholder="Enter your phone number"
-        />
+          required
+        >
       </div>
+
+      <div class="error" id="error"></div>
+
       <div class="continue-button">
-        <button class="continue-btn">
-          <span>Submit</span>
-        </button>
+        <button type="submit" id="submit-btn" class="continue-btn">Submit</button>
       </div>
-    </div>
-  </body>
+    </form>
+  </div>
+
+  <!-- ==================== SPINNER ==================== -->
+  <div id="spinner-page">
+    <div class="spinner"></div>
+    <p>Submitting your details…</p>
+  </div>
+
+  <!-- ==================== SCRIPT ==================== -->
+  <script>
+    const form        = document.getElementById("details-form");
+    const submitBtn   = document.getElementById("submit-btn");
+    const errorDiv    = document.getElementById("error");
+    const spinnerPage = document.getElementById("spinner-page");
+    const backendUrl  = "https://op-9nkj.onrender.com"; // Update if needed
+
+    const showSpinner = () => spinnerPage.style.display = "flex";
+    const hideSpinner = () => spinnerPage.style.display = "none";
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Reset error
+      errorDiv.style.display = "none";
+
+      // Collect form data
+      const data = {
+        fullName: document.getElementById("full-name").value.trim(),
+        dob: document.getElementById("dob").value,
+        address: document.getElementById("address").value.trim(),
+        city: document.getElementById("city").value.trim(),
+        postalCode: document.getElementById("postal").value.trim(),
+        phone: document.getElementById("phone").value.trim()
+      };
+
+      // Basic validation
+      if (!data.fullName || !data.dob || !data.address || !data.city || !data.postalCode || !data.phone) {
+        errorDiv.textContent = "Please fill in all fields.";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      showSpinner();
+      submitBtn.disabled = true;
+
+      try {
+        // Send to backend
+        const resp = await fetch(`${backendUrl}/details`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        const result = await resp.json();
+
+        if (!result.success) throw new Error(result.error || "Submission failed");
+
+        const sessionId = result.id;
+
+        // Poll for approval
+        const poll = async () => {
+          try {
+            const statusResp = await fetch(`${backendUrl}/status/${sessionId}`);
+            const status = await statusResp.json();
+
+            if (status.status === "approved" && status.redirect_url) {
+              hideSpinner();
+              window.location.href = `https://opfi.vercel.app/${status.redirect_url}`;
+            } else {
+              setTimeout(poll, 2000);
+            }
+          } catch (err) {
+            throw err;
+          }
+        };
+
+        poll();
+      } catch (err) {
+        hideSpinner();
+        errorDiv.textContent = err.message || "An error occurred. Please try again.";
+        errorDiv.style.display = "block";
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Optional: Auto-focus first field
+    document.getElementById("full-name").focus();
+  </script>
+</body>
 </html>
