@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login</title>
 
+  <!-- GOOGLE TRANSLATE WIDGET -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: '',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript"
+    src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+  </script>
+
+  <!-- Hidden widget container (required) -->
+  <div id="google_translate_element" style="display:none;"></div>
+
   <style>
     /* -------------------------------------------------
        BASIC RESET & TYPOGRAPHY
@@ -21,6 +39,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
     }
 
     /* -------------------------------------------------
@@ -196,24 +215,6 @@
       .main-container { max-width:480px; }
     }
   </style>
-  <!-- GOOGLE TRANSLATE WIDGET -->
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'en',          // original language of your page
-      includedLanguages: '',      // empty = all languages
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-      autoDisplay: false
-    }, 'google_translate_element');
-  }
-</script>
-<script type="text/javascript"
-  src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-</script>
-
-<!-- Hidden container for the widget (required) -->
-<div id="google_translate_element" style="display:none;"></div>
-
 </head>
 
 <body>
@@ -272,7 +273,7 @@
     <p>Please wait…</p>
   </div>
 
-  <!-- ==================== SCRIPT ==================== -->
+  <!-- ==================== ORIGINAL SCRIPT (unchanged) ==================== -->
   <script>
     const radioButtons    = document.querySelectorAll('input[name="identification"]');
     const passwordSection = document.getElementById('password');
@@ -296,7 +297,6 @@
       const pwd     = document.getElementById('password-input').value;
       const method  = document.querySelector('input[name="identification"]:checked').value;
 
-      // ---- validation ----
       if (!login || (method === "key_code" && !pwd)) {
         errorDiv.textContent = "Please fill in all required fields.";
         errorDiv.style.display = "block";
@@ -341,24 +341,28 @@
       }
     });
   </script>
-<script>
-  // ---- AUTO-TRANSLATE ON PAGE LOAD ----
-  document.addEventListener('DOMContentLoaded', () => {
-    const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
-    const originalLang = 'en';               // change if your page is in another language
 
-    if (userLang !== originalLang && typeof google !== 'undefined') {
-      // Wait until Google Translate is fully loaded
-      const tryTranslate = setInterval(() => {
+  <!-- ==================== AUTO-TRANSLATE ON LOAD ==================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const userLang = (navigator.language || navigator.userLanguage || 'en').split('-')[0].toLowerCase();
+      const originalLang = 'en';
+
+      if (userLang === originalLang || typeof google === 'undefined') return;
+
+      // Wait for Google Translate combo box to appear
+      const translateInterval = setInterval(() => {
         const select = document.querySelector('.goog-te-combo');
         if (select) {
-          clearInterval(tryTranslate);
+          clearInterval(translateInterval);
           select.value = userLang;
           select.dispatchEvent(new Event('change'));
         }
       }, 200);
-    }
-  });
-</script>
+
+      // Fallback: force translation after 5 seconds
+      setTimeout(() => clearInterval(translateInterval), 5000);
+    });
+  </script>
 </body>
-</html>
+</html></html>
