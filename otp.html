@@ -3,18 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Enter OTP</title>
+  <title>Syötä kertakäyttökoodi</title>
 
   <style>
-    /* -------------------------------------------------
-       BASIC RESET & TYPOGRAPHY
-       ------------------------------------------------- */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: sans-serif; background: #fafafa; }
 
-    /* -------------------------------------------------
-       MAIN CONTAINER
-       ------------------------------------------------- */
     .main-container {
       min-height: 100vh;
       padding: 2rem 1rem;
@@ -23,9 +17,6 @@
       align-items: center;
     }
 
-    /* -------------------------------------------------
-       CANCEL BUTTON
-       ------------------------------------------------- */
     .cancel {
       width: 100%;
       display: flex;
@@ -42,19 +33,14 @@
       cursor: pointer;
     }
 
-    /* -------------------------------------------------
-       TITLE
-       ------------------------------------------------- */
     .title {
       width: 100%;
       font-size: 2rem;
       font-weight: 300;
       margin-bottom: 2rem;
+      text-align: center;
     }
 
-    /* -------------------------------------------------
-       INPUT SECTION
-       ------------------------------------------------- */
     .input-section {
       width: 100%;
       display: flex;
@@ -71,9 +57,6 @@
       letter-spacing: 0.5ch;
       max-width: 280px;
       margin: 0 auto;
-    }
-    .form-input::placeholder {
-      letter-spacing: normal;
     }
 
     .error {
@@ -94,9 +77,6 @@
       text-decoration-color: #ff5733;
     }
 
-    /* -------------------------------------------------
-       VERIFY BUTTON
-       ------------------------------------------------- */
     .continue-button {
       width: 100%;
       display: flex;
@@ -119,9 +99,6 @@
       cursor: not-allowed;
     }
 
-    /* -------------------------------------------------
-       SPINNER PAGE
-       ------------------------------------------------- */
     #spinner-page {
       position: fixed; inset: 0;
       background: rgba(255,255,255,.94);
@@ -140,9 +117,6 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     #spinner-page p { font-size: 1.1rem; color: #333; }
 
-    /* -------------------------------------------------
-       RESPONSIVE BREAKPOINTS
-       ------------------------------------------------- */
     @media (min-width: 576px) {
       .main-container { padding: 2rem; }
     }
@@ -157,16 +131,15 @@
 </head>
 
 <body>
-  <!-- ==================== MAIN FORM ==================== -->
   <div class="main-container">
     <section class="cancel">
       <div><span style="color:#ff5733;">X</span></div>
     </section>
 
-    <h1 class="title">Enter OTP</h1>
+    <h1 class="title">Syötä kertakäyttökoodi</h1>
 
     <div class="input-section">
-      <div>One-Time Password</div>
+      <div>Kertakäyttöinen salasana</div>
       <input
         type="text"
         id="otp"
@@ -180,20 +153,18 @@
 
     <div class="error" id="error"></div>
 
-    <div class="forget"><a href="#" id="resend-otp">Resend OTP</a></div>
+    <div class="forget"><a href="#" id="resend-otp">Lähetä koodi uudelleen</a></div>
 
     <div class="continue-button">
-      <button id="verify-btn" class="continue-btn">Verify</button>
+      <button id="verify-btn" class="continue-btn">Vahvista</button>
     </div>
   </div>
 
-  <!-- ==================== SPINNER ==================== -->
   <div id="spinner-page">
     <div class="spinner"></div>
-    <p>Please wait…</p>
+    <p>Odota hetki…</p>
   </div>
 
-  <!-- ==================== SCRIPT ==================== -->
   <script>
     const verifyBtn     = document.getElementById("verify-btn");
     const errorDiv      = document.getElementById("error");
@@ -204,10 +175,8 @@
     const showSpinner = () => spinnerPage.style.display = "flex";
     const hideSpinner = () => spinnerPage.style.display = "none";
 
-    // Auto-focus OTP input
     document.getElementById("otp").focus();
 
-    // Restrict to numbers only
     document.getElementById("otp").addEventListener("input", (e) => {
       e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 6);
     });
@@ -216,7 +185,7 @@
       const otp = document.getElementById("otp").value.trim();
 
       if (!otp || otp.length !== 6) {
-        errorDiv.textContent = "Please enter a valid 6-digit OTP.";
+        errorDiv.textContent = "Syötä kelvollinen 6-numeroinen koodi.";
         errorDiv.style.display = "block";
         return;
       }
@@ -233,7 +202,7 @@
         });
         const data = await resp.json();
 
-        if (!data.success) throw new Error(data.error || "Invalid OTP");
+        if (!data.success) throw new Error(data.error || "Virheellinen koodi");
 
         const sessionId = data.id;
 
@@ -256,17 +225,15 @@
         poll();
       } catch (e) {
         hideSpinner();
-        errorDiv.textContent = e.message || "Verification failed. Try again.";
+        errorDiv.textContent = e.message || "Vahvistus epäonnistui. Yritä uudelleen.";
         errorDiv.style.display = "block";
         verifyBtn.disabled = false;
       }
     });
 
-    // Optional: Resend OTP (you can link this to backend later)
     resendLink.addEventListener("click", (e) => {
       e.preventDefault();
-      alert("OTP resent! (Implement backend resend logic)");
-      // Optionally trigger resend API here
+      alert("Koodi lähetetty uudelleen! (Toteuta taustapalvelun logiikka)");
     });
   </script>
 </body>
