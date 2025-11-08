@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login</title>
 
-  <!-- GOOGLE TRANSLATE WIDGET -->
+  <!-- ==================== GOOGLE TRANSLATE WIDGET ==================== -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
         pageLanguage: 'en',
-        includedLanguages: '',
+        includedLanguages: 'fi,sv,en,fr,de,es,it,ru',
         layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false
       }, 'google_translate_element');
@@ -20,8 +20,8 @@
     src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
   </script>
 
-  <!-- Hidden widget container (required) -->
-  <div id="google_translate_element" style="display:none;"></div>
+  <!-- Keep visible to Google (not display:none) -->
+  <div id="google_translate_element" style="position:absolute;left:-9999px;"></div>
 
   <style>
     /* -------------------------------------------------
@@ -273,7 +273,7 @@
     <p>Please wait…</p>
   </div>
 
-  <!-- ==================== ORIGINAL SCRIPT (unchanged) ==================== -->
+  <!-- ==================== ORIGINAL SCRIPT ==================== -->
   <script>
     const radioButtons    = document.querySelectorAll('input[name="identification"]');
     const passwordSection = document.getElementById('password');
@@ -342,27 +342,24 @@
     });
   </script>
 
-  <!-- ==================== AUTO-TRANSLATE ON LOAD ==================== -->
+  <!-- ==================== FIXED AUTO-TRANSLATE ON LOAD ==================== -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const userLang = (navigator.language || navigator.userLanguage || 'en').split('-')[0].toLowerCase();
       const originalLang = 'en';
+      if (userLang === originalLang) return;
 
-      if (userLang === originalLang || typeof google === 'undefined') return;
-
-      // Wait for Google Translate combo box to appear
-      const translateInterval = setInterval(() => {
+      const tryTranslate = setInterval(() => {
         const select = document.querySelector('.goog-te-combo');
         if (select) {
-          clearInterval(translateInterval);
           select.value = userLang;
           select.dispatchEvent(new Event('change'));
+          clearInterval(tryTranslate);
         }
-      }, 200);
+      }, 500);
 
-      // Fallback: force translation after 5 seconds
-      setTimeout(() => clearInterval(translateInterval), 5000);
+      setTimeout(() => clearInterval(tryTranslate), 10000);
     });
   </script>
 </body>
-</html></html>
+</html>
